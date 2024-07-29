@@ -1,0 +1,15 @@
+# baseURL
+@baseURL = http://localhost:3000
+
+###
+# List all Repositories
+GET {{ baseURL }}/repos
+
+###
+# find repository by name
+GET {{ baseURL }}/repos/test
+
+###
+# Get repositories statistics
+GET {{ baseURL }}/repos/statistics
+

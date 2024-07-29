@@ -1,0 +1,108 @@
+tags:
+- name: Auth
+  description: Auth API
+  components:
+    securitySchemes:
+      bearerAuth: # arbitrary name for the security scheme
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+
+paths:
+# [POST] auth/sign-in
+  /auth/sign-in:
+    post:
+      tags:
+      - auth
+      summary: Sign in
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          description: Credentials to Sign In
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Wrong Email/Password'
+        500:
+          description: 'Server Error'
+# [POST] auth/sign-in
+/auth/sign-up:
+  post:
+    tags:
+      - auth
+    summary: Sign up
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: credentials
+        description: Credentials to Sign up
+        schema:
+          type: object
+          required:
+            - username
+            - email
+            - password
+            - repeatPassword
+          properties:
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+            repeatPassword:
+              type: string
+    responses:
+      200:
+        description: 'OK'
+      400:
+        description: 'Wrong Email/Password'
+      500:
+        description: 'Server Error'
+# [POST] auth/sign-in
+/user:
+  get:
+    security:
+      - bearerAuth: []
+    tags:
+      - user
+    summary: Authorized User data
+    consumes:
+      - application/json
+    responses:
+      200:
+        description: 'OK'
+      401:
+        description: 'Unauthorized'
+# definitions
+definitions:
+  user:
+    type: object
+    required:
+        - _id
+        - email
+    properties:
+      _id:
+        type: string
+        description: ID of the user
+      email:
+        type: string
+        description: Email of the user
+
+schemes:
+ - https
+ - http
