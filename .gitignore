@@ -5,6 +5,7 @@ logs/error/*
 
 .env.development.local
 .env.test.local
+.env.*.local
 
 dist/
 src/logs/
