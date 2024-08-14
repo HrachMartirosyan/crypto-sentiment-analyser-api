@@ -23,7 +23,7 @@ class MigrateDataService {
 
   constructor(filename: string) {
     this.filename = filename;
-    this.filepath = `${__dirname}/../data/${filename}`;
+    this.filepath = `${__dirname}/../../data/${filename}`;
 
     this.checkFile().then(() => {
       this.getFileType();
