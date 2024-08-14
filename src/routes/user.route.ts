@@ -2,9 +2,8 @@ import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
 import UserController from '@controllers/user.controller';
 import RequestValidator from '@/validators/request.validator';
-import { SignInDto, SignUpDto } from '@/dto/auth.dto';
 import { AuthHeaderDto } from '@/dto/headers.dto';
-import { getJWTTokenData } from '@/factories/user.factory';
+import { getJWTTokenData } from '@middlewares/jwt.middleware';
 
 class UserRoute implements Routes {
   public path = '/user';
@@ -18,7 +17,7 @@ class UserRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.validator.validateHeaders(AuthHeaderDto), this.controller.getUser);
+    this.router.get(`${this.path}`, this.validator.validateHeaders(AuthHeaderDto), getJWTTokenData, this.controller.getUser);
   }
 }
 

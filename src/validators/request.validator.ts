@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { validate, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { UserDto } from '@/dto/user.dto';
 
 function transformValidationErrorsToJSON(errors: ValidationError[]) {
   return errors.reduce((p, c: ValidationError) => {
@@ -32,7 +33,20 @@ class RequestValidator {
       const errors = await validate(plainToInstance(dto, req.headers));
 
       if (errors.length > 0) {
-        res.status(401).json('Unauthorized');
+        res.status(400).json(transformValidationErrorsToJSON(errors));
+        return;
+      }
+
+      next();
+    };
+  }
+
+  validateQuery(dto: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const errors = await validate(plainToInstance(dto, req.query));
+
+      if (errors.length > 0) {
+        res.status(401).json(transformValidationErrorsToJSON(errors));
         return;
       }
 

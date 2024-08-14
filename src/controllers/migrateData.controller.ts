@@ -5,8 +5,8 @@ import MigrateDataService from '@services/migrateData.service';
 class MigrateDataController {
   private service: MigrateDataService;
 
-  constructor(filepath: string) {
-    this.service = new MigrateDataService(filepath);
+  constructor(filename: string) {
+    this.service = new MigrateDataService(filename);
   }
 
   public schedule() {
@@ -19,10 +19,7 @@ class MigrateDataController {
     console.log('🔄 Migrating');
     console.log('=================================');
 
-    await this.service.migrate();
-
-
-    // END
+    return this.service.migrate();
   }
 }
 

@@ -73,7 +73,7 @@ paths:
         description: 'Wrong Email/Password'
       500:
         description: 'Server Error'
-# [POST] auth/sign-in
+# [GET] auth/sign-in
 /user:
   get:
     security:
@@ -81,6 +81,21 @@ paths:
     tags:
       - user
     summary: Authorized User data
+    consumes:
+      - application/json
+    responses:
+      200:
+        description: 'OK'
+      401:
+        description: 'Unauthorized'
+# [GET] company/list
+/company/list:
+  get:
+    security:
+      - bearerAuth: []
+    tags:
+      - company
+    summary: Companies list
     consumes:
       - application/json
     responses:

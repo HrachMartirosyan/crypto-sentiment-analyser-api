@@ -1,15 +1,22 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 
 import UserService from '@services/user.service';
+import { craftPublicUser } from '@/factories/user.factory';
+import { RequestWithUser } from '@interfaces/routes.interface';
+import { BadRequest } from '@exceptions/BadRequest';
 
 class UserController {
   public userService: UserService = new UserService();
 
-  public getUser = async (req: Request, res: Response, next: NextFunction) => {
+  public getUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      // @ts-ignore
-      console.log('headers123', req.user);
-      res.json(null);
+      const user = await this.userService.getUserByID(req.user._id);
+
+      if (!user) {
+        throw new BadRequest('Wrong user credentials!');
+      }
+
+      res.json(craftPublicUser(user));
     } catch (e) {
       next(e);
     }

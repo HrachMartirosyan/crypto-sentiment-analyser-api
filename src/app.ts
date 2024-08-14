@@ -15,25 +15,28 @@ import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 
 import MigrateDataController from '@controllers/migrateData.controller';
+import InitDataController from '@controllers/initData.controller';
 
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
 
-  private migrateData: MigrateDataController;
+  private initData: InitDataController;
+  private migrationsData: MigrateDataController[] = [];
 
   constructor(routes: Routes[]) {
     this.app = express();
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
 
-    this.connectToDatabase().then(() => {
+    this.connectToDatabase().then(async () => {
       this.initializeMiddlewares();
+      await this.initializeInitData();
       this.initializeRoutes(routes);
       this.initializeSwagger();
       this.initializeErrorHandling();
-      // this.initializeMigrateData();
+      await this.initializeMigrateData();
     });
   }
 
@@ -66,7 +69,7 @@ class App {
 
     await connect(dbConnection.url);
 
-    console.log('💿 Connected to MongoDB')
+    console.log('💿 Connected to MongoDB');
   }
 
   private initializeMiddlewares() {
@@ -106,10 +109,20 @@ class App {
     this.app.use(errorMiddleware);
   }
 
+  private async initializeInitData() {
+    this.initData = new InitDataController();
+    return this.initData.create();
+  }
+
   private async initializeMigrateData() {
-    this.migrateData = new MigrateDataController('data/sentiment_scores.csv');
-    await this.migrateData.migrate();
-    this.migrateData.schedule();
+    const filenames = ['amc_comment.csv', 'amc_content.csv', 'cry_comment.csv', 'cry_content.csv', 'gst_comment.csv'];
+
+    for (const filename of filenames) {
+      const migrateDataController = new MigrateDataController(filename);
+      await migrateDataController.migrate();
+      migrateDataController.schedule();
+      this.migrationsData.push(migrateDataController);
+    }
   }
 }
 
