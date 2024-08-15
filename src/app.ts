@@ -115,12 +115,24 @@ class App {
   }
 
   private async initializeMigrateData() {
-    const filenames = ['amc_comment.csv', 'amc_content.csv', 'cry_comment.csv', 'cry_content.csv', 'gst_comment.csv'];
+    const filenames = [
+      'amc_comments_lexican.csv',
+      'amc_comments_vader.csv',
+      'amc_content_lexican.csv',
+      'amc_content_vader.csv',
+      'cry_comments_lexican.csv',
+      'cry_comments_vader.csv',
+      'cry_content_lexican.csv',
+      'cry_content_vader.csv',
+      'gst_comments_lexican.csv',
+      'gst_comments_vader.csv',
+      'gst_content_lexican.csv',
+      'gst_content_vader.csv',
+    ];
 
     for (const filename of filenames) {
       const migrateDataController = new MigrateDataController(filename);
       await migrateDataController.migrate();
-      migrateDataController.schedule();
       this.migrationsData.push(migrateDataController);
     }
   }

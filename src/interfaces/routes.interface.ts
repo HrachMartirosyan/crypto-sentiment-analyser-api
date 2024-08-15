@@ -11,6 +11,11 @@ export type JWTPayload = {
   exp?: number;
 };
 
-export interface RequestWithUser extends Request {
+export interface TypedRequest<T = any, U = unknown> extends Express.Request {
+  body?: U;
+  query?: T;
+}
+
+export interface RequestWithUser<T = any, U = unknown> extends TypedRequest<T, U> {
   user: JWTPayload;
 }

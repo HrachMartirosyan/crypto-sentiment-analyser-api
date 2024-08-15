@@ -1,23 +1,26 @@
 import fs from 'fs';
 import csv from 'csv-parser';
 import SentimentChartModel from '@models/sentimentChart.model';
-import { SentimentChart } from '@interfaces/sentimentChart.interface';
-import { camelCaseToDashed } from '@utils/str';
+import { SentimentChart, SentimentChartSentiment } from '@interfaces/sentimentChart.interface';
+import { capitalizeFirstLetter } from '@utils/str';
 
-const typeMap = {
+const companyMap = {
   amc: 'a-m-c',
   cry: 'crypto-currency',
   gst: 'game-stop',
 };
 
-Object.freeze(typeMap);
+Object.freeze(companyMap);
 
 class MigrateDataService {
   private readonly filename: string;
   private readonly filepath: string;
 
-  private data: Pick<SentimentChart, 'type' | 'sentiment' | 'value'>[] = [];
-  private type: string;
+  private data: SentimentChart[] = [];
+
+  private company: string;
+  private type: SentimentChart['type'];
+  private analysisModel: SentimentChart['analysisModel'];
 
   private sentimentChart = SentimentChartModel;
 
@@ -26,13 +29,16 @@ class MigrateDataService {
     this.filepath = `${__dirname}/../../data/${filename}`;
 
     this.checkFile().then(() => {
-      this.getFileType();
+      this.getFileMetadata();
     });
   }
 
-  private getFileType() {
-    const [first] = this.filename.split('_');
-    this.type = typeMap[first];
+  private getFileMetadata() {
+    const base = this.filename.replace('.csv', '');
+    const [company, type, analysisModel] = base.split('_');
+    this.company = companyMap[company];
+    this.type = type as SentimentChart['type'];
+    this.analysisModel = analysisModel as SentimentChart['analysisModel'];
   }
 
   private async checkFile() {
@@ -51,11 +57,17 @@ class MigrateDataService {
   }
 
   private collect = data => {
-    for (const [key, value] of Object.entries(data)) {
+    const { Quarter } = data;
+    for (const sentiment of Object.values(SentimentChartSentiment)) {
+      const value = data[capitalizeFirstLetter(sentiment)];
+
       this.data.push({
+        company: this.company,
         type: this.type,
-        sentiment: key.toLowerCase(),
-        value: Number(value),
+        analysisModel: this.analysisModel,
+        sentiment: sentiment.toLowerCase() as SentimentChart['sentiment'],
+        value,
+        quarter: Quarter,
       });
     }
   };

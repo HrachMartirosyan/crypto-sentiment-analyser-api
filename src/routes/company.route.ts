@@ -16,6 +16,7 @@ class CompanyRoute implements Routes {
   }
 
   private initializeRoutes() {
+    // @ts-ignore
     this.router.get(`${this.path}/list`, this.validator.validateHeaders(AuthHeaderDto), this.controller.getCompanies);
   }
 }

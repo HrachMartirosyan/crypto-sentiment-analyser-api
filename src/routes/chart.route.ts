@@ -21,6 +21,7 @@ class ChartRoute implements Routes {
       `${this.path}/sentiment`,
       this.validator.validateHeaders(AuthHeaderDto),
       this.validator.validateQuery(SentimentChartDto),
+      // @ts-ignore
       this.controller.getSentimentChart,
     );
   }

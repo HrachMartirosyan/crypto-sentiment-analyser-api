@@ -17,6 +17,7 @@ class UserRoute implements Routes {
   }
 
   private initializeRoutes() {
+    // @ts-ignore
     this.router.get(`${this.path}`, this.validator.validateHeaders(AuthHeaderDto), getJWTTokenData, this.controller.getUser);
   }
 }
