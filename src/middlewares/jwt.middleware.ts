@@ -4,6 +4,7 @@ import { JWT_SECRET } from '@config';
 import { JWTPayload, RequestWithUser } from '@interfaces/routes.interface';
 
 export function getJWTTokenData(req: RequestWithUser, res: Response, next: NextFunction) {
+  // @ts-ignore
   const { authorization } = req.headers;
   if (!authorization) {
     next();
