@@ -6,8 +6,6 @@ if (DB_USERNAME && DB_PASSWORD) {
   credentials = `${DB_USERNAME}:${encodeURIComponent(DB_PASSWORD)}@`;
 }
 
-console.log(`mongodb://${credentials}${DB_HOST}:${DB_PORT}/${DB_DATABASE}`);
-
 export const dbConnection = {
   url: `mongodb://${credentials}${DB_HOST}:${DB_PORT}/${DB_DATABASE}`,
   options: {
